@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterDTO } from './DTO/RegisterDTO';
 import { success } from 'src/utils';
+import { LoginDTO, RegisterDTO } from './DTO';
 
 @Controller('auth')
 export class AuthController {
@@ -12,5 +12,14 @@ export class AuthController {
     await this.authService.register(registerDTO)
 
     return success("Successfully registered")
+  }
+
+  @Post("login")
+  async login(@Body() loginDTO: LoginDTO) {
+    const token = await this.authService.login(loginDTO)
+
+    return success("“Successfully logged in", {
+      token
+    })
   }
 }

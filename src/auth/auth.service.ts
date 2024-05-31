@@ -1,13 +1,13 @@
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
-import { RegisterDTO } from './DTO/RegisterDTO';
+import { LoginDTO, RegisterDTO } from './DTO';
 import { ResponseErrorCode, fail } from 'src/utils';
-import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from "bcrypt"
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService, private readonly jwtService: JwtService) { }
 
   async register({ name, email, phone, password }: RegisterDTO) {
     if (email !== "") {
@@ -37,6 +37,49 @@ export class AuthService {
         password: encryptedPassword
       }
     })
+  }
+
+  async login({ email, phone, password }: LoginDTO) {
+    let encryptedPassword: string
+    let name: string
+    if (email !== "") {
+      if (email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/) === null) {
+        throw new BadRequestException(fail("Invalid email, phone number, or password", ResponseErrorCode.ERR_4))
+      }
+
+      const user = await this.findUserByEmail(email)
+      if (user === null) {
+        throw new BadRequestException(fail("Invalid email, phone number, or password", ResponseErrorCode.ERR_4))
+      }
+
+      encryptedPassword = user.password
+      name = user.name
+    } else {
+      if (phone.match(/^08\d{8,11}$/) === null) {
+        throw new BadRequestException(fail("Invalid email, phone number, or password", ResponseErrorCode.ERR_4))
+      }
+
+      const user = await this.findUserByPhone(phone)
+      if (user === null) {
+        throw new BadRequestException(fail("Invalid email, phone number, or password", ResponseErrorCode.ERR_4))
+      }
+
+      encryptedPassword = user.password
+      name = user.name
+    }
+
+    if (bcrypt.compareSync(password, encryptedPassword)) {
+      const token = this.jwtService.sign({
+        sub: email ?? phone,
+        name,
+        email,
+        phone
+      })
+
+      return token
+    } else {
+      throw new BadRequestException(fail("Invalid email, phone number, or password", ResponseErrorCode.ERR_4))
+    }
   }
 
   private async findUserByEmail(email: string) {
