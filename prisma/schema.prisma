@@ -19,7 +19,6 @@ model User {
   email    String
   phone    String
   password String
-  salt     String
 
   histories History[]
 }
