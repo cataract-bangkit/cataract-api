@@ -1,6 +1,6 @@
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { LoginDTO, RegisterDTO } from './DTO';
-import { ResponseErrorCode, fail } from 'src/utils';
+import { RequestUser, ResponseErrorCode, fail } from 'src/utils';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from "bcrypt"
 import { JwtService } from '@nestjs/jwt';
@@ -69,17 +69,23 @@ export class AuthService {
     }
 
     if (bcrypt.compareSync(password, encryptedPassword)) {
-      const token = this.jwtService.sign({
-        sub: email ?? phone,
-        name,
-        email,
-        phone
-      })
+      const token = this.refresh({name, email, phone})
 
       return token
     } else {
       throw new BadRequestException(fail("Invalid email, phone number, or password", ResponseErrorCode.ERR_4))
     }
+  }
+
+  refresh({ name, email, phone }: RequestUser) {
+    const token = this.jwtService.sign({
+      sub: email ?? phone,
+      name,
+      email,
+      phone
+    })
+
+    return token
   }
 
   private async findUserByEmail(email: string) {
