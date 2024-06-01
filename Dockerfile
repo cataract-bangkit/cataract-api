@@ -7,7 +7,7 @@ COPY package.json yarn.lock ./
 RUN yarn cache clean
 RUN yarn install --no-lockfile
 COPY . .
-# RUN yarn prisma generate
+RUN yarn prisma generate
 RUN yarn build
 
 FROM base AS production
@@ -18,6 +18,6 @@ COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/package.json .
 COPY --from=build /usr/src/app/yarn.lock .
-# COPY --from=build /usr/src/app/prisma ./prisma
+COPY --from=build /usr/src/app/prisma ./prisma
 
-CMD ["sh", "-c", "yarn start:prod"]
+CMD ["sh", "-c", "yarn migrate && yarn start:prod"]
