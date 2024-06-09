@@ -7,15 +7,17 @@ export class StorageService {
   private storage: Storage;
 
   constructor() {
+    const credentials = JSON.parse(process.env.GCS_CREDENTIALS)
+
     this.storage = new Storage({
       projectId: process.env.PROJECT_ID,
-      keyFilename: './credentials.json'
+      credentials
     })
   }
 
   async uploadFile(file: Express.Multer.File, bucket: string, destination: string) {
     await this.storage.bucket(bucket).file(destination).save(file.buffer);
-  
+
     const url = `https://storage.googleapis.com/${bucket}/${destination}`;
     return url;
   };
