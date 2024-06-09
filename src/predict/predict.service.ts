@@ -1,9 +1,14 @@
 import { BadRequestException, Injectable, PayloadTooLargeException } from "@nestjs/common";
 import { ResponseErrorCode, fail } from "src/utils";
+import { ModelService } from "./model.service";
+import { PrismaService } from "src/prisma/prisma.service";
+import { StorageService } from "./storage.service";
 
 @Injectable()
 export class PredictService {
-	async predict(img: Express.Multer.File) {
+	constructor(private readonly prisma: PrismaService, private readonly modelService: ModelService, private readonly storageService: StorageService) { }
+
+	async predict(img: Express.Multer.File, userId: string) {
 		if (img.size > 5000000) {
 			throw new PayloadTooLargeException(fail("Image too large. Maximum image size is 5mb.", ResponseErrorCode.ERR_5))
 		}
@@ -14,10 +19,26 @@ export class PredictService {
 			throw new BadRequestException(fail("File has invalid extension. Allowed extensions are png/jpg/jpeg.", ResponseErrorCode.ERR_6))
 		}
 
-		try {
-			// TODO
-		} catch (e) {
-			throw new BadRequestException(fail("Prediction failed.", ResponseErrorCode.ERR_7))
+		const { result, confidence } = await this.modelService.predict(img.buffer)
+		const date = new Date()
+
+		const imgUrl = await this.storageService.uploadImage(img)
+
+		const {userId: _userId, ...history} = await this.prisma.history.create({
+			data: {
+				result,
+				imgUrl,
+				confidence,
+				predictedAt: date,
+				userId
+			}
+		})
+		
+
+		const data = {
+			result: history
 		}
+
+		return data
 	}
 }
