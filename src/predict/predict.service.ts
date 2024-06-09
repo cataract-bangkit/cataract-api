@@ -24,7 +24,7 @@ export class PredictService {
 
 		const imgUrl = await this.storageService.uploadImage(img)
 
-		const {userId: _userId, ...history} = await this.prisma.history.create({
+		const { userId: _userId, ...history } = await this.prisma.history.create({
 			data: {
 				result,
 				imgUrl,
@@ -33,12 +33,30 @@ export class PredictService {
 				userId
 			}
 		})
-		
+
 
 		const data = {
 			result: history
 		}
 
 		return data
+	}
+
+	async getHistories(userId: string) {
+		const histories = await this.prisma.history.findMany({
+			select: {
+				id: true,
+				result: true,
+				imgUrl: true,
+				confidence: true,
+				predictedAt: true,
+				userId: false
+			},
+			where: {
+				userId
+			}
+		})
+
+		return histories
 	}
 }
