@@ -1,10 +1,4 @@
-FROM node:alpine AS base
-
-RUN apk add --no-cache \
-    bash \
-    libc6-compat \
-    libgcc \
-    libstdc++
+FROM node:20 AS base
 
 FROM base AS build
 
