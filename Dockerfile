@@ -1,5 +1,11 @@
 FROM node:alpine AS base
 
+RUN apk add --no-cache \
+    bash \
+    libc6-compat \
+    libgcc \
+    libstdc++
+
 FROM base AS build
 
 WORKDIR /usr/src/app
