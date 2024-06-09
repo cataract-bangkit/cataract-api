@@ -40,6 +40,7 @@ export class AuthService {
   }
 
   async login({ email, phone, password }: LoginDTO) {
+    let id: string
     let encryptedPassword: string
     let name: string
     if (email !== "") {
@@ -54,6 +55,7 @@ export class AuthService {
 
       encryptedPassword = user.password
       name = user.name
+      id = user.id
     } else {
       if (phone.match(/^08\d{8,11}$/) === null) {
         throw new BadRequestException(fail("Invalid email, phone number, or password", ResponseErrorCode.ERR_4))
@@ -66,10 +68,11 @@ export class AuthService {
 
       encryptedPassword = user.password
       name = user.name
+      id = user.id
     }
 
     if (bcrypt.compareSync(password, encryptedPassword)) {
-      const token = this.refresh({name, email, phone})
+      const token = this.refresh({ id, name, email, phone })
 
       return token
     } else {
@@ -77,9 +80,10 @@ export class AuthService {
     }
   }
 
-  refresh({ name, email, phone }: RequestUser) {
+  refresh({ id, name, email, phone }: RequestUser) {
     const token = this.jwtService.sign({
-      sub: email ?? phone,
+      id,
+      sub: id,
       name,
       email,
       phone

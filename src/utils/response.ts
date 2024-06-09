@@ -17,5 +17,6 @@ export enum ResponseErrorCode {
   ERR_3 = "ERR_3",
   ERR_4 = "ERR_4",
   ERR_5 = "ERR_5",
-  ERR_6 = "ERR_6"
+  ERR_6 = "ERR_6",
+  ERR_7 = "ERR_7"
 }
