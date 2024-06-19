@@ -1,73 +1,38 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# CatarAct API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Overview
+API Server for serving CatarAct APK requests. This repository is part of [CatarAct](https://github.com/cataract-bangkit) Google Bangkit Capstone Project.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## How to Run Locally
 
-## Description
+### Prerequisites
+- Linux OS (prefered)
+- `nodejs`
+- `yarn` package manager
+- `PostgreSQL` database
+- A Google Cloud Project with a public Google Cloud Storage Bucket configured
+- A machine learning model in Tensorflow.js format, preferably stored in Google Cloud Storage Bucket
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ yarn install
+### Step by Step
+- Clone this repository.
+- Create a `.env` file in the root folder. Fill it with:
 ```
-
-## Running the app
-
-```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+APP_PORT= # port to run the server (e.g. 3001)
+DATABASE_URL= # postgresql database connection url
+JWT_SECRET= # a secret text for signing JWT
+MODEL_PUBLIC_URL= # a url to ML model JSON file in Tensorflow.js format
+GCS_BUCKET= # Google Cloud Storage Bucket name
+PROJECT_ID= # Google Cloud Project ID
+GCS_CREDENTIALS= # Google Cloud Storage Service Account credentials key in stringified JSON format.
 ```
+- Run `yarn` to install dependencies.
+- Run `yarn start:dev` to run the development server.
 
-## Test
+### Deployment
+A `Dockerfile` is available on the root folder for containerization. The docker image can be used for deployment such as Cloud Run or a remote VM.
 
-```bash
-# unit tests
-$ yarn run test
+### API
+API documentation available on [GDocs](https://docs.google.com/document/d/14-z-A81R5Q6ayDlHV15_qKiDLNk82Dks9zUBCzACMc0/edit?usp=sharing).
 
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+### Acknowledgement
+This project is developed by [Bangkit CatarAct](https://github.com/cataract-bangkit) team, specifically [bonaventuragal](https://github.com/bonaventuragal) and [aidahputri](https://github.com/aidahputri).
